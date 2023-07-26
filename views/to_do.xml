@@ -7,9 +7,11 @@
         <field name="arch" type="xml">
             <form string="Form">
                 <header>
-                    <button name="action_in_progress" string="Confirm" type="object" class="oe_highlight"/>
-<!--                    <button name="action_done" string="Completed" type="object" class="oe_highlight"/>-->
-<!--                    <button name="action_cancel" string="Cancel" type="object" class="oe_highlight"/>-->
+                    <button name="action_task_sent" string="Submit" states="draft" type="object" class="oe_highlight"/>
+                    <button name="action_in_progress" string="In Progress" states="task_sent" type="object" class="oe_highlight"/>
+                    <button name="action_on_hold" string="On Hold" states="task_sent,in_progress" type="object" class="oe_highlight"/>
+                    <button name="action_done" string="Completed" states="on_hold,task_sent,in_progress" type="object" class="oe_highlight"/>
+                    <button name="action_cancel" string="Cancel" type="object" states="task_sent,in_progress,on_hold"/>
 
                     <field name="state" widget="statusbar"/>
                 </header>

@@ -1,3 +1,32 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<odoo noupdate="1">
+<odoo>
+    <record id="activity_to_do_activity_custom" model="mail.activity.type">
+        <field name="name">To Do</field>
+        <field name="res_model_id" ref="to_do.model_to_do_tasks"/>
+        <field name="delay_count">30</field>
+    </record>
+    <data noupdate="1">
+        <record id="ir_to_do_due_works_days" model="ir.cron">
+            <field name="name">To do</field>
+            <field name="model_id" ref="model_to_do_tasks"/>
+            <field name="state">code</field>
+            <field name="code">model.auto_activity_due_admin()</field>
+            <field name="active" eval="True"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False"/>
+        </record>
+        <record id="ir_to_do_removes" model="ir.cron">
+            <field name="name">To Do Remove</field>
+            <field name="model_id" ref="model_to_do_tasks"/>
+            <field name="state">code</field>
+            <field name="code">model.auto_due_tasks_remove_from_admins()</field>
+            <field name="active" eval="True"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False"/>
+        </record>
+    </data>
 </odoo>
