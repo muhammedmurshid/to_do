@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.module.category" id="to_do_tasks_groups">
+            <field name="name">To Do Tasks</field>
+            <field name="sequence">20</field>
+        </record>
+        <record id="to_do_organizer" model="res.groups">
+            <field name="name">Organizer</field>
+            <field name="category_id" ref="to_do.to_do_tasks_groups"/>
+        </record>
+        <record id="to_do_admin" model="res.groups">
+            <field name="name">Admin</field>
+            <field name="category_id" ref="to_do.to_do_tasks_groups"/>
+        </record>
+        <record id="to_do_worker_id" model="res.groups">
+            <field name="name">Service Provider</field>
+            <field name="category_id" ref="to_do.to_do_tasks_groups"/>
+        </record>
+
+    </data>
+</odoo>
