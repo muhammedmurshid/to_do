@@ -24,8 +24,10 @@
                     </div>
                     <group>
                         <group>
+                            <field name="make_visible_employee" invisible="1"/>
+                            <field name="current_emp_id" invisible="1"/>
                             <field name="project_id"/>
-                            <field name="assigned_to"/>
+                            <field name="assigned_to" attrs="{'readonly': [('make_visible_employee', '=', False)]}"/>
                             <field name="dead_line"/>
                             <field name="tags_id" widget="many2many_tags"/>
                         </group>
@@ -94,7 +96,7 @@
                             <div class="oe_kanban_bottom_right" t-if="!selection_mode">
                                 <field name="priority" widget="priority"/>
 
-                                <field name="dead_line" widget="remaining_days"/>
+                                <field name="dead_line" widget="remaining_days" attrs="{'invisible': [('state', 'in', ['completed','cancelled'])]}"/>
 
                                 <!--                                <field name="kanban_state" widget="state_selection" groups="base.group_user"-->
                                 <!--                                       invisible="context.get('fsm_mode', False)"/>-->
