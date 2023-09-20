@@ -8,10 +8,15 @@
             <form string="Form">
                 <header>
                     <button name="action_task_sent" string="Submit" states="draft" type="object" class="oe_highlight"/>
-                    <button name="action_in_progress" string="In Progress" states="task_sent" type="object" class="oe_highlight"/>
-                    <button name="action_on_hold" string="On Hold" states="task_sent,in_progress" type="object" class="oe_highlight"/>
-                    <button name="action_done" string="Completed" states="on_hold,task_sent,in_progress" type="object" class="oe_highlight"/>
+                    <button name="action_in_progress" string="In Progress" states="task_sent" type="object"
+                            class="oe_highlight"/>
+                    <button name="action_on_hold" string="On Hold" states="task_sent,in_progress" type="object"
+                            class="oe_highlight" groups="to_do.to_do_organizer"/>
+                    <button name="action_done" string="Completed" states="on_hold,task_sent,in_progress" type="object"
+                            class="oe_highlight"/>
                     <button name="action_cancel" string="Cancel" type="object" states="task_sent,in_progress,on_hold"/>
+                    <button name="action_re_assign_to_do_work" states="task_sent,in_progress,on_hold" type="object"
+                            string="Re-Assign" groups="to_do.to_do_organizer"/>
 
                     <field name="state" widget="statusbar"/>
                 </header>
@@ -26,12 +31,31 @@
                         <group>
                             <field name="make_visible_employee" invisible="1"/>
                             <field name="current_emp_id" invisible="1"/>
-                            <field name="project_id"/>
-                            <field name="assigned_to" attrs="{'readonly': [('make_visible_employee', '=', False)]}"/>
-                            <field name="dead_line"/>
-                            <field name="tags_id" widget="many2many_tags"/>
+                            <field name="project_id"
+                                   attrs="{'readonly': [('state', 'in', ['completed', 'cancelled'])]}"/>
+                            <field name="assigned_to"
+                                   attrs="{'readonly': ['|', ('make_visible_employee', '=', False), ('state', 'in', ['completed', 'cancelled'])]}"/>
+                            <field name="dead_line" attrs="{'readonly': [('state', 'in', ['completed', 'cancelled'])]}"/>
+                            <field name="tags_id" widget="many2many_tags"
+                                   attrs="{'readonly': [('state', 'in', ['completed', 'cancelled'])]}"/>
                         </group>
                     </group>
+                    <notebook>
+                        <page string="TimeSheet">
+                            <group>
+                                <group>
+                                    <field name="from_time"
+                                           attrs="{'readonly': [('state', 'in', ['completed', 'cancelled'])]}"/>
+                                    <field name="to_time"
+                                           attrs="{'readonly': [('state', 'in', ['completed', 'cancelled'])]}"/>
+
+                                </group>
+                                <group>
+                                    <field name="total_time"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
                 </sheet>
                 <div class="oe_chatter">
                     <field name="message_follower_ids"/>
@@ -96,7 +120,8 @@
                             <div class="oe_kanban_bottom_right" t-if="!selection_mode">
                                 <field name="priority" widget="priority"/>
 
-                                <field name="dead_line" widget="remaining_days" attrs="{'invisible': [('state', 'in', ['completed','cancelled'])]}"/>
+                                <field name="dead_line" widget="remaining_days"
+                                       attrs="{'invisible': [('state', 'in', ['completed','cancelled'])]}"/>
 
                                 <!--                                <field name="kanban_state" widget="state_selection" groups="base.group_user"-->
                                 <!--                                       invisible="context.get('fsm_mode', False)"/>-->

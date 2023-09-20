@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="wizard_for_to_do_new_worker" model="ir.ui.view">
+        <field name="name">To Do Wizard</field>
+        <field name="model">reassign.to_do.worker</field>
+        <field name="arch" type="xml">
+            <form string="Reassign To Do">
+                <group class="oe_title">
+                    <field name="assign_to_new"/>
+                </group>
+
+                <footer>
+                    <button string="Assign" class="oe_highlight" type="object" name='action_assign'/>
+                    <button string="Discard" type="object" special='cancel'/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

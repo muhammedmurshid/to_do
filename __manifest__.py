@@ -9,6 +9,7 @@
         'security/ir.model.access.csv',
         'security/rules.xml',
         'views/to_do.xml',
+        'views/assign_wizard.xml',
 
     ],
     'demo': [],

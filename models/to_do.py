@@ -1,5 +1,6 @@
 from odoo import fields, models, api, _
 from datetime import datetime, date
+from odoo.exceptions import UserError
 
 
 class ToDoTasks(models.Model):
@@ -33,8 +34,7 @@ class ToDoTasks(models.Model):
         res = super(ToDoTasks, self).create(vals)
         return res
 
-    @api.depends('make_visible_employee', 'name')
-    def get_employee(self):
+    def _compute_get_employee(self):
         print('kkkll')
         user_crnt = self.env.user.id
 
@@ -45,7 +45,7 @@ class ToDoTasks(models.Model):
         else:
             self.make_visible_employee = True
 
-    make_visible_employee = fields.Boolean(string="User", default=True, compute='get_employee')
+    make_visible_employee = fields.Boolean(string="User", default=True, compute='_compute_get_employee')
 
     @api.depends('name')
     def compute_assign_to(self):
@@ -134,17 +134,24 @@ class ToDoTasks(models.Model):
         for i in ss:
             if i.dead_line:
                 if current_datetime > i.dead_line:
-                    if i.state in 'task_sent' or i.state in 'in_progress' or i.state in 'on_hold':
+                    if i.state in 'task_sent' or i.state in 'in_progress':
                         users = ss.env.ref('to_do.to_do_admin').users
                         for rec in users:
                             i.activity_schedule('to_do.activity_to_do_activity_custom', user_id=rec.id,
-                                                note=f'Due Task')
+                                                note=f'Due TO DO Task')
+
+    def _compute_display_name(self):
+        for rec in self:
+            if rec.project_id:
+                rec.display_name = rec.name + ' - ' + rec.project_id.name
+            else:
+                rec.display_name = rec.name + ' - ' + 'To Do Task'
 
     def auto_due_tasks_remove_from_admins(self):
         ss = self.env['to_do.tasks'].search([])
 
         for i in ss:
-            if i.state in 'completed' or i.state in 'cancelled':
+            if i.state in 'completed' or i.state in 'cancelled' or i.state in 'on_hold':
                 activity_id = self.env['mail.activity'].search(
                     [('res_id', '=', self.id), ('user_id', '=', self.env.user.id), (
                         'activity_type_id', '=', self.env.ref('to_do.activity_to_do_activity_custom').id)])
@@ -155,3 +162,61 @@ class ToDoTasks(models.Model):
                 other_activity_ids = self.env['mail.activity'].search([('res_id', '=', self.id), (
                     'activity_type_id', '=', self.env.ref('to_do.activity_to_do_activity_custom').id)])
                 other_activity_ids.unlink()
+
+    def action_re_assign_to_do_work(self):
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'reassign.to_do.worker',
+            'view_mode': 'form',
+            'view_type': 'form',
+            'target': 'new',
+            'name': 'Re-Assign',
+
+        }
+
+    # Time sheet fields
+    from_time = fields.Datetime(string='From Time')
+    to_time = fields.Datetime(string='To Time')
+    total_time = fields.Char(string='Total Duration', compute='_compute_time_difference', store=True)
+
+    @api.depends('from_time', 'to_time')
+    def _compute_time_difference(self):
+        for record in self:
+            if record.from_time and record.to_time:
+                # Convert the datetime fields to datetime objects
+                date_str1 = record.from_time.strftime("%Y-%m-%d %H:%M:%S")
+                date_str2 = record.to_time.strftime("%Y-%m-%d %H:%M:%S")
+
+                # Convert the strings back to datetime objects
+                date_time1 = datetime.strptime(date_str1, "%Y-%m-%d %H:%M:%S")
+                date_time2 = datetime.strptime(date_str2, "%Y-%m-%d %H:%M:%S")
+
+                # Calculate the time difference
+                time_diff = date_time2 - date_time1
+
+                # Extract days, hours, and minutes
+                days = time_diff.days
+                hours, remainder = divmod(time_diff.seconds, 3600)
+                minutes, _ = divmod(remainder, 60)
+
+                # Format the result as a string
+                time_difference_str = f"{days} days, {hours} hours, {minutes} minutes"
+                record.total_time = time_difference_str
+            else:
+                record.total_time = False
+
+
+class ReassignToDoWorker(models.TransientModel):
+    _name = 'reassign.to_do.worker'
+
+    assign_to_new = fields.Many2one('res.users', string='Assign To New Worker')
+
+    def action_assign(self):
+        to_do = self.env['to_do.tasks'].search([('id', '=', self.env.context['active_id'])])
+        if self.assign_to_new:
+            to_do.assigned_to = self.assign_to_new
+            to_do.state = 'task_sent'
+            to_do.activity_schedule('to_do.activity_to_do_activity_custom', user_id=self.assign_to_new.id,
+                                    note=f'Check on your tasks {self.assign_to_new.name}')
+        else:
+            raise UserError('Please Select User')
