@@ -33,11 +33,17 @@
                             <field name="current_emp_id" invisible="1"/>
                             <field name="project_id"
                                    attrs="{'readonly': [('state', 'in', ['completed', 'cancelled'])]}"/>
-                            <field name="assigned_to"
-                                   attrs="{'readonly': ['|', ('make_visible_employee', '=', False), ('state', 'in', ['completed', 'cancelled'])]}"/>
-                            <field name="dead_line" attrs="{'readonly': [('state', 'in', ['completed', 'cancelled'])]}"/>
+                            <field name="batch_id"
+                                   attrs="{'readonly': [('state', 'in', ['completed', 'cancelled'])]}"/>
+
                             <field name="tags_id" widget="many2many_tags"
                                    attrs="{'readonly': [('state', 'in', ['completed', 'cancelled'])]}"/>
+                        </group>
+                        <group>
+                            <field name="user_crash_coordinator" invisible="1"/>
+                            <field name="assigned_to"
+                                   attrs="{'readonly': ['|', '|', ('make_visible_employee', '=', False), ('user_crash_coordinator', '=', True),('state', 'in', ['completed', 'cancelled'])]}"/>
+                            <field name="dead_line" attrs="{'readonly': [('state', 'in', ['completed', 'cancelled'])]}"/>
                         </group>
                     </group>
                     <notebook>

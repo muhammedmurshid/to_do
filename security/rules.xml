@@ -14,6 +14,18 @@
             <field name="domain_force">['|',('current_emp_id.parent_id.user_id.id' ,'=', user.id), ('create_uid', '=', user.id)]</field>
             <field name="groups" eval="[(4, ref('to_do.to_do_organizer'))]"/>
         </record>
+        <record model="ir.rule" id="task_crash_coordinator_rule">
+            <field name="name">My Tasks</field>
+            <field name="model_id" ref="model_to_do_tasks"/>
+            <field name="domain_force">[('assigned_to.id','=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('to_do.to_do_coordinator'))]"/>
+        </record>
+        <record model="ir.rule" id="to_do_task_crash_head_rule">
+            <field name="name">Tasks Organize</field>
+            <field name="model_id" ref="model_to_do_tasks"/>
+            <field name="domain_force">[('current_emp_id.parent_id.user_id.id' ,'=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('to_do.to_do_crash_head'))]"/>
+        </record>
 
     </data>
 </odoo>

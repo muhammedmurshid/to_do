@@ -17,6 +17,14 @@
             <field name="name">TO DO Worker</field>
             <field name="category_id" ref="to_do.to_do_tasks_groups"/>
         </record>
+        <record id="to_do_coordinator" model="res.groups">
+            <field name="name">TO DO Crash Coordinator</field>
+            <field name="category_id" ref="to_do.to_do_tasks_groups"/>
+        </record>
+        <record id="to_do_crash_head" model="res.groups">
+            <field name="name">TO DO Crash Head</field>
+            <field name="category_id" ref="to_do.to_do_tasks_groups"/>
+        </record>
 
     </data>
 </odoo>

@@ -21,8 +21,9 @@ class ToDoTasks(models.Model):
         ('cancelled', 'Cancelled')
     ], string='Status', default='draft')
     project_id = fields.Many2one('project.project', string='Project')
-    assigned_to = fields.Many2one('res.users', string='Assigned To', compute='compute_assign_to', store=True,
-                                  readonly=False)
+    assigned_to = fields.Many2one('res.users', string='Assigned To', default=lambda self: self.env.user,
+                                  readonly=False, required=True)
+    batch_id = fields.Many2one('logic.base.batch', string='Batch')
     dead_line = fields.Date(string='Dead Line')
     tags_id = fields.Many2many('project.tags', string='Tags')
     current_emp_id = fields.Many2one('hr.employee', string='Current Employee',
@@ -47,10 +48,20 @@ class ToDoTasks(models.Model):
 
     make_visible_employee = fields.Boolean(string="User", default=True, compute='_compute_get_employee')
 
-    @api.depends('name')
-    def compute_assign_to(self):
-        if self.make_visible_employee == False:
-            self.assigned_to = self.env.user
+    def _compute_get_crash_coordinator(self):
+        res_user = self.env['res.users'].search([('id', '=', self.env.user.id)])
+        if res_user.has_group('to_do.to_do_coordinator'):
+            self.user_crash_coordinator = True
+
+        else:
+            self.user_crash_coordinator = False
+
+    user_crash_coordinator = fields.Boolean(string="User", compute='_compute_get_crash_coordinator')
+
+    # @api.depends('name')
+    # def compute_assign_to(self):
+    #     if self.make_visible_employee == False:
+    #         self.assigned_to = self.env.user
 
     @api.constrains('state')
     def chatt(self):
