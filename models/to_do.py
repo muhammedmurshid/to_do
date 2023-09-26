@@ -188,7 +188,7 @@ class ToDoTasks(models.Model):
     # Time sheet fields
     from_time = fields.Datetime(string='From Time')
     to_time = fields.Datetime(string='To Time')
-    total_time = fields.Char(string='Total Duration', compute='_compute_time_difference', store=True)
+    total_time = fields.Float(string='Total Duration')
 
     @api.depends('from_time', 'to_time')
     def _compute_time_difference(self):

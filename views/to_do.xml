@@ -31,8 +31,7 @@
                         <group>
                             <field name="make_visible_employee" invisible="1"/>
                             <field name="current_emp_id" invisible="1"/>
-                            <field name="project_id"
-                                   attrs="{'readonly': [('state', 'in', ['completed', 'cancelled'])]}"/>
+                            <field name="project_id" invisible="1"/>
                             <field name="batch_id"
                                    attrs="{'readonly': [('state', 'in', ['completed', 'cancelled'])]}"/>
 
@@ -50,14 +49,7 @@
                         <page string="TimeSheet">
                             <group>
                                 <group>
-                                    <field name="from_time"
-                                           attrs="{'readonly': [('state', 'in', ['completed', 'cancelled'])]}"/>
-                                    <field name="to_time"
-                                           attrs="{'readonly': [('state', 'in', ['completed', 'cancelled'])]}"/>
-
-                                </group>
-                                <group>
-                                    <field name="total_time"/>
+                                    <field name="total_time" widget="float_time" string="Total spent time for this work"/>
                                 </group>
                             </group>
                         </page>
