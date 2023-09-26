@@ -43,13 +43,16 @@
                             <field name="assigned_to"
                                    attrs="{'readonly': ['|', '|', ('make_visible_employee', '=', False), ('user_crash_coordinator', '=', True),('state', 'in', ['completed', 'cancelled'])]}"/>
                             <field name="dead_line" attrs="{'readonly': [('state', 'in', ['completed', 'cancelled'])]}"/>
+                            <field name="rating" widget="priority" attrs="{'readonly': ['|',('user_accounts_head', '=', False), ('state', 'not in', ['completed'])]}"/>
+                            <field name="user_accounts_head" string="Account Head" invisible="1"/>
+                            <field name="user_crash_head" invisible="1"/>
                         </group>
                     </group>
                     <notebook>
                         <page string="TimeSheet">
                             <group>
                                 <group>
-                                    <field name="total_time" widget="float_time" string="Total spent time for this work"/>
+                                    <field name="total_time" widget="float_time" string="Total time spent for this work"/>
                                 </group>
                             </group>
                         </page>
@@ -74,6 +77,7 @@
                 <field name="assigned_to"/>
                 <field name="dead_line"/>
                 <field name="state"/>
+                <field name="rating" widget="priority" readonly="1"/>
             </tree>
 
         </field>

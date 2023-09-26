@@ -29,12 +29,6 @@ class ToDoTasks(models.Model):
     current_emp_id = fields.Many2one('hr.employee', string='Current Employee',
                                      default=lambda self: self.env.user.employee_id)
 
-    @api.model
-    def create(self, vals):
-        print('create')
-        res = super(ToDoTasks, self).create(vals)
-        return res
-
     def _compute_get_employee(self):
         print('kkkll')
         user_crnt = self.env.user.id
@@ -52,11 +46,36 @@ class ToDoTasks(models.Model):
         res_user = self.env['res.users'].search([('id', '=', self.env.user.id)])
         if res_user.has_group('to_do.to_do_coordinator'):
             self.user_crash_coordinator = True
-
         else:
             self.user_crash_coordinator = False
 
     user_crash_coordinator = fields.Boolean(string="User", compute='_compute_get_crash_coordinator')
+
+    def _compute_get_crash_head(self):
+        res_user = self.env['res.users'].search([('id', '=', self.env.user.id)])
+        if res_user.has_group('to_do.to_do_crash_head'):
+            self.user_crash_head = True
+
+        else:
+            self.user_crash_head = False
+
+    user_crash_head = fields.Boolean(string="Crash Head", compute='_compute_get_crash_head')
+
+    @api.model
+    def _compute_get_account_head(self):
+        print('jksha')
+        res_user = self.env['res.users'].search([('id', '=', self.env.user.id)])
+        print(res_user.has_group, 'group')
+        if res_user.has_group('to_do.to_do_organizer'):
+            self.user_accounts_head = True
+        elif res_user.has_group('to_do.to_do_crash_head'):
+            self.user_accounts_head = True
+            print('ya')
+        else:
+            self.user_accounts_head = False
+            print('no')
+
+    user_accounts_head = fields.Boolean(string="User", compute='_compute_get_account_head')
 
     # @api.depends('name')
     # def compute_assign_to(self):
@@ -189,6 +208,9 @@ class ToDoTasks(models.Model):
     from_time = fields.Datetime(string='From Time')
     to_time = fields.Datetime(string='To Time')
     total_time = fields.Float(string='Total Duration')
+    rating = fields.Selection([
+        ('0', 'None'), ('1', 'Poor'), ('2', 'Fair'), ('3', 'Good'), ('4', 'Very Good'), ('5', 'Excellent')],
+    )
 
     @api.depends('from_time', 'to_time')
     def _compute_time_difference(self):

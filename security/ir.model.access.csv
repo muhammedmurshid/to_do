@@ -4,7 +4,7 @@ access_to_do,access_details,model_to_do_tasks,to_do.to_do_admin,1,1,1,1
 access_to_do_user,access_details,model_to_do_tasks,to_do.to_do_worker_id,1,1,0,1
 access_to_do_organizer,access_details,model_to_do_tasks,to_do.to_do_organizer,1,1,1,1
 access_to_do_organizer_wizard,access_details,model_reassign_to_do_worker,,1,1,1,1
-access_to_do_coordinator,access_details,model_to_do_tasks,to_do.to_do_coordinator,1,1,1,1
+access_to_do_coordinator,access_details,model_to_do_tasks,to_do.to_do_coordinator,1,1,0,0
 access_to_do_head_crash,access_details,model_to_do_tasks,to_do.to_do_crash_head,1,1,1,1
 
 
