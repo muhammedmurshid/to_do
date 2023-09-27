@@ -21,13 +21,15 @@ class ToDoTasks(models.Model):
         ('cancelled', 'Cancelled')
     ], string='Status', default='draft')
     project_id = fields.Many2one('project.project', string='Project')
-    assigned_to = fields.Many2one('res.users', string='Assigned To', default=lambda self: self.env.user,
-                                  readonly=False, required=True)
+
     batch_id = fields.Many2one('logic.base.batch', string='Batch')
     dead_line = fields.Date(string='Dead Line')
     tags_id = fields.Many2many('project.tags', string='Tags')
     current_emp_id = fields.Many2one('hr.employee', string='Current Employee',
                                      default=lambda self: self.env.user.employee_id)
+
+    assigned_to = fields.Many2one('res.users', string='Assigned To', domain=[('faculty_check', '=', False)],
+                                  readonly=False, required=True, )
 
     def _compute_get_employee(self):
         print('kkkll')
@@ -242,7 +244,7 @@ class ToDoTasks(models.Model):
 class ReassignToDoWorker(models.TransientModel):
     _name = 'reassign.to_do.worker'
 
-    assign_to_new = fields.Many2one('res.users', string='Assign To New Worker')
+    assign_to_new = fields.Many2one('res.users', string='Assign To New Worker', domain=[('faculty_check', '=', False)])
 
     def action_assign(self):
         to_do = self.env['to_do.tasks'].search([('id', '=', self.env.context['active_id'])])
