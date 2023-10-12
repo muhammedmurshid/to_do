@@ -42,6 +42,7 @@
                             <field name="user_crash_coordinator" invisible="1"/>
                             <field name="assigned_to"
                                    attrs="{'readonly': ['|', '|', ('make_visible_employee', '=', False), ('user_crash_coordinator', '=', True),('state', 'in', ['completed', 'cancelled'])]}"/>
+                            <field name="coworkers_ids" widget="many2many_tags"/>
                             <field name="dead_line" attrs="{'readonly': [('state', 'in', ['completed', 'cancelled'])]}"/>
                             <field name="rating" widget="priority" attrs="{'readonly': ['|',('user_accounts_head', '=', False), ('state', 'not in', ['completed'])]}"/>
                             <field name="user_accounts_head" string="Account Head" invisible="1"/>
@@ -152,7 +153,7 @@
     <record model="ir.actions.act_window" id="to_do_custom_action_for_users">
         <field name="name">Tasks</field>
         <field name="res_model">to_do.tasks</field>
-        <field name="domain">[('assigned_to.id','=', uid)]</field>
+        <field name="domain">['|',('assigned_to.id','=', uid), ('coworkers_ids', 'in', [uid])]</field>
         <field name="view_mode">kanban,tree,form</field>
     </record>
     <menuitem name="My Tasks" id="menu_my_to_do_tasks"

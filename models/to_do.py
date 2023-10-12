@@ -27,6 +27,7 @@ class ToDoTasks(models.Model):
     tags_id = fields.Many2many('project.tags', string='Tags')
     current_emp_id = fields.Many2one('hr.employee', string='Current Employee',
                                      default=lambda self: self.env.user.employee_id)
+    coworkers_ids = fields.Many2many('res.users', string='Co-Workers')
 
     assigned_to = fields.Many2one('res.users', string='Assigned To', domain=[('faculty_check', '=', False)],
                                   readonly=False, required=True, )
@@ -155,8 +156,15 @@ class ToDoTasks(models.Model):
         self.write({'state': 'on_hold'})
 
     def action_task_sent(self):
+        print(self.coworkers_ids, 'oooo')
         self.activity_schedule('to_do.activity_to_do_activity_custom', user_id=self.assigned_to.id,
                                note=f'Check on your tasks {self.assigned_to.name}')
+        users = self.env['res.users'].search([('id', 'in', self.coworkers_ids.ids)])
+        for i in users:
+            print(i.name , 'name')
+            self.activity_schedule('to_do.activity_to_do_activity_custom', user_id=i.id,
+                                   note=f'Check on your tasks {i.name}')
+
         self.write({'state': 'task_sent'})
 
     def auto_activity_due_admin(self):
