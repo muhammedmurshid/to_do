@@ -28,7 +28,7 @@ class ToDoTasks(models.Model):
     current_emp_id = fields.Many2one('hr.employee', string='Current Employee',
                                      default=lambda self: self.env.user.employee_id)
     coworkers_ids = fields.Many2many('res.users', string='Co-Workers')
-
+    assigned_date = fields.Date(string='Assigned Date', default=date.today())
     assigned_to = fields.Many2one('res.users', string='Assigned To', domain=[('faculty_check', '=', False)],
                                   readonly=False, required=True, )
 
