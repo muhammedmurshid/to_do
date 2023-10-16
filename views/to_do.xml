@@ -30,19 +30,19 @@
                     <group>
                         <group>
                             <field name="make_visible_employee" invisible="1"/>
-                            <field name="current_emp_id" invisible="1"/>
+                            <field name="current_emp_id" string="Organizer" readonly="1"/>
                             <field name="project_id" invisible="1"/>
                             <field name="batch_id"
-                                   attrs="{'readonly': [('state', 'in', ['completed', 'cancelled'])]}"/>
-
+                                   attrs="{'readonly': ['|',('state', 'in', ['completed', 'cancelled']), ('user_accounts_head', '=', False)]}"/>
                             <field name="tags_id" widget="many2many_tags"
                                    attrs="{'readonly': [('state', 'in', ['completed', 'cancelled'])]}"/>
                         </group>
                         <group>
+                            <field name="to_do_workers" invisible="1"/>
                             <field name="user_crash_coordinator" invisible="1"/>
                             <field name="assigned_to"
-                                   attrs="{'readonly': ['|', '|', ('make_visible_employee', '=', False), ('user_crash_coordinator', '=', True),('state', 'in', ['completed', 'cancelled'])]}"/>
-                            <field name="coworkers_ids" widget="many2many_tags"/>
+                                   attrs="{'readonly': ['|', '|', '|',('make_visible_employee', '=', False), ('to_do_workers', '=', True),('user_crash_coordinator', '=', True),('state', 'in', ['completed', 'cancelled'])]}"/>
+                            <field name="coworkers_ids" widget="many2many_tags" attrs="{'readonly': [('to_do_workers', '=', True)]}"/>
                             <field name="assigned_date" attrs="{'readonly': [('user_accounts_head', '=', False)]}"/>
                             <field name="dead_line" attrs="{'readonly': [('state', 'in', ['completed', 'cancelled'])]}"/>
                             <field name="rating" widget="priority" attrs="{'readonly': ['|',('user_accounts_head', '=', False), ('state', 'not in', ['completed'])]}"/>
@@ -78,7 +78,7 @@
                 <field name="project_id"/>
                 <field name="assigned_to"/>
                 <field name="dead_line"/>
-                <field name="state"/>
+                <field name="state" widget="badge" decoration-success="state == 'completed'" decoration-warning="state == 'on_hold'" decoration-info="state == 'task_sent'" decoration-primary="state == 'in_progress'"/>
                 <field name="rating" widget="priority" readonly="1"/>
             </tree>
 

@@ -6,5 +6,7 @@ access_to_do_organizer,access_details,model_to_do_tasks,to_do.to_do_organizer,1,
 access_to_do_organizer_wizard,access_details,model_reassign_to_do_worker,,1,1,1,1
 access_to_do_coordinator,access_details,model_to_do_tasks,to_do.to_do_coordinator,1,1,0,0
 access_to_do_head_crash,access_details,model_to_do_tasks,to_do.to_do_crash_head,1,1,1,1
+access_to_do_workers,access_details,model_to_do_tasks,to_do.to_do_workers,1,1,0,0
+access_to_do_heads,access_details,model_to_do_tasks,to_do.to_do_heads,1,1,1,1
 
 

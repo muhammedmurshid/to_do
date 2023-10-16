@@ -19,7 +19,7 @@ class ToDoTasks(models.Model):
         ('draft', 'Draft'), ('task_sent', 'Task Sent'), ('in_progress', 'In Progress'), ('on_hold', 'On Hold'),
         ('completed', 'Completed'),
         ('cancelled', 'Cancelled')
-    ], string='Status', default='draft')
+    ], string='Status', default='draft', tracking=True)
     project_id = fields.Many2one('project.project', string='Project')
 
     batch_id = fields.Many2one('logic.base.batch', string='Batch')
@@ -31,6 +31,7 @@ class ToDoTasks(models.Model):
     assigned_date = fields.Date(string='Assigned Date', default=date.today())
     assigned_to = fields.Many2one('res.users', string='Assigned To', domain=[('faculty_check', '=', False)],
                                   readonly=False, required=True, )
+    task_organizer = fields.Many2one('res.users', string='Task Organizer', default=lambda self: self.env.user)
 
     def _compute_get_employee(self):
         print('kkkll')
@@ -54,6 +55,14 @@ class ToDoTasks(models.Model):
 
     user_crash_coordinator = fields.Boolean(string="User", compute='_compute_get_crash_coordinator')
 
+    def _compute_get_to_do_workers(self):
+        res_user = self.env['res.users'].search([('id', '=', self.env.user.id)])
+        if res_user.has_group('to_do.to_do_workers'):
+            self.to_do_workers = True
+        else:
+            self.to_do_workers = False
+
+    to_do_workers = fields.Boolean(string="User", compute='_compute_get_to_do_workers')
     def _compute_get_crash_head(self):
         res_user = self.env['res.users'].search([('id', '=', self.env.user.id)])
         if res_user.has_group('to_do.to_do_crash_head'):
@@ -73,6 +82,8 @@ class ToDoTasks(models.Model):
             self.user_accounts_head = True
         elif res_user.has_group('to_do.to_do_crash_head'):
             self.user_accounts_head = True
+        elif res_user.has_group('to_do.to_do_heads'):
+            self.user_accounts_head = True
             print('ya')
         else:
             self.user_accounts_head = False
@@ -85,39 +96,39 @@ class ToDoTasks(models.Model):
     #     if self.make_visible_employee == False:
     #         self.assigned_to = self.env.user
 
-    @api.constrains('state')
-    def chatt(self):
-        if self.state == 'draft':
-            msg = _(
-                "Stage Changed to Draft",
-            )
-            self.message_post(body=msg)
-
-        elif self.state == 'task_sent':
-            msg = _(
-                "Stage Changed to Task Sent",
-            )
-            self.message_post(body=msg)
-        elif self.state == 'on_hold':
-            msg = _(
-                "Stage Changed to On Hold",
-            )
-            self.message_post(body=msg)
-        elif self.state == 'in_progress':
-            msg = _(
-                "Stage Changed to In Progress",
-            )
-            self.message_post(body=msg)
-        elif self.state == 'completed':
-            msg = _(
-                "Stage Changed to Completed",
-            )
-            self.message_post(body=msg)
-        elif self.state == 'cancelled':
-            msg = _(
-                "Stage Changed to Cancelled",
-            )
-            self.message_post(body=msg)
+    # @api.constrains('state')
+    # def chatt(self):
+    #     if self.state == 'draft':
+    #         msg = _(
+    #             "Stage Changed to Draft",
+    #         )
+    #         self.message_post(body=msg)
+    #
+    #     elif self.state == 'task_sent':
+    #         msg = _(
+    #             "Stage Changed to Task Sent",
+    #         )
+    #         self.message_post(body=msg)
+    #     elif self.state == 'on_hold':
+    #         msg = _(
+    #             "Stage Changed to On Hold",
+    #         )
+    #         self.message_post(body=msg)
+    #     elif self.state == 'in_progress':
+    #         msg = _(
+    #             "Stage Changed to In Progress",
+    #         )
+    #         self.message_post(body=msg)
+    #     elif self.state == 'completed':
+    #         msg = _(
+    #             "Stage Changed to Completed",
+    #         )
+    #         self.message_post(body=msg)
+    #     elif self.state == 'cancelled':
+    #         msg = _(
+    #             "Stage Changed to Cancelled",
+    #         )
+    #         self.message_post(body=msg)
 
     def action_done(self):
         activity_id = self.env['mail.activity'].search([('res_id', '=', self.id), ('user_id', '=', self.env.user.id), (
