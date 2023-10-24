@@ -48,6 +48,7 @@
                             <field name="rating" widget="priority" attrs="{'readonly': ['|',('user_accounts_head', '=', False), ('state', 'not in', ['completed'])]}"/>
                             <field name="user_accounts_head" string="Account Head" invisible="1"/>
                             <field name="user_crash_head" invisible="1"/>
+                            <field name="completed_date" invisible="1"/>
                         </group>
                     </group>
                     <notebook>
