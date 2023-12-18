@@ -42,10 +42,13 @@
                             <field name="user_crash_coordinator" invisible="1"/>
                             <field name="assigned_to"
                                    attrs="{'readonly': ['|', '|', '|',('make_visible_employee', '=', False), ('to_do_workers', '=', True),('user_crash_coordinator', '=', True),('state', 'in', ['completed', 'cancelled'])]}"/>
-                            <field name="coworkers_ids" widget="many2many_tags" attrs="{'readonly': [('to_do_workers', '=', True)]}"/>
+                            <field name="coworkers_ids" widget="many2many_tags"
+                                   attrs="{'readonly': [('to_do_workers', '=', True)]}"/>
                             <field name="assigned_date" attrs="{'readonly': [('user_accounts_head', '=', False)]}"/>
-                            <field name="dead_line" attrs="{'readonly': [('state', 'in', ['completed', 'cancelled'])]}"/>
-                            <field name="rating" widget="priority" attrs="{'readonly': ['|',('user_accounts_head', '=', False), ('state', 'not in', ['completed'])]}"/>
+                            <field name="dead_line"
+                                   attrs="{'readonly': [('state', 'in', ['completed', 'cancelled'])]}"/>
+                            <field name="rating" widget="priority"
+                                   attrs="{'readonly': ['|',('user_accounts_head', '=', False), ('state', 'not in', ['completed'])]}"/>
                             <field name="user_accounts_head" string="Account Head" invisible="1"/>
                             <field name="user_crash_head" invisible="1"/>
                             <field name="completed_date" invisible="1"/>
@@ -55,8 +58,16 @@
                         <page string="TimeSheet">
                             <group>
                                 <group>
-                                    <field name="total_time" widget="float_time" string="Total time spent for this work"/>
+                                    <field name="total_time" widget="float_time"
+                                           string="Total time spent for this work"/>
                                 </group>
+                            </group>
+                        </page>
+                        <page string="Description">
+                            <group>
+
+                                <field name="description" placeholder="Description"/>
+
                             </group>
                         </page>
                     </notebook>
@@ -79,7 +90,9 @@
                 <field name="project_id"/>
                 <field name="assigned_to"/>
                 <field name="dead_line"/>
-                <field name="state" widget="badge" decoration-success="state == 'completed'" decoration-warning="state == 'on_hold'" decoration-info="state == 'task_sent'" decoration-primary="state == 'in_progress'"/>
+                <field name="state" widget="badge" decoration-success="state == 'completed'"
+                       decoration-warning="state == 'on_hold'" decoration-info="state == 'task_sent'"
+                       decoration-primary="state == 'in_progress'"/>
                 <field name="rating" widget="priority" readonly="1"/>
             </tree>
 

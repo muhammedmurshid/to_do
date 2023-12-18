@@ -64,6 +64,7 @@ class ToDoTasks(models.Model):
             self.to_do_workers = False
 
     to_do_workers = fields.Boolean(string="User", compute='_compute_get_to_do_workers')
+
     def _compute_get_crash_head(self):
         res_user = self.env['res.users'].search([('id', '=', self.env.user.id)])
         if res_user.has_group('to_do.to_do_crash_head'):
@@ -231,6 +232,7 @@ class ToDoTasks(models.Model):
     from_time = fields.Datetime(string='From Time')
     to_time = fields.Datetime(string='To Time')
     total_time = fields.Float(string='Total Duration')
+    description = fields.Text('Description')
     rating = fields.Selection([
         ('0', 'None'), ('1', 'Poor'), ('2', 'Fair'), ('3', 'Good'), ('4', 'Very Good'), ('5', 'Excellent')],
     )
