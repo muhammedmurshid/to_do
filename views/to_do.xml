@@ -36,6 +36,8 @@
                                    attrs="{'readonly': ['|',('state', 'in', ['completed', 'cancelled']), ('user_accounts_head', '=', False)]}"/>
                             <field name="tags_id" widget="many2many_tags"
                                    attrs="{'readonly': [('state', 'in', ['completed', 'cancelled'])]}"/>
+                            <field name="description" placeholder="Description"/>
+
                         </group>
                         <group>
                             <field name="to_do_workers" invisible="1"/>
@@ -51,26 +53,28 @@
                                    attrs="{'readonly': ['|',('user_accounts_head', '=', False), ('state', 'not in', ['completed'])]}"/>
                             <field name="user_accounts_head" string="Account Head" invisible="1"/>
                             <field name="user_crash_head" invisible="1"/>
+                            <field name="total_time" widget="float_time"
+                                   string="Total time spent for this work"/>
                             <field name="completed_date" invisible="1"/>
                         </group>
                     </group>
-                    <notebook>
-                        <page string="TimeSheet">
-                            <group>
-                                <group>
-                                    <field name="total_time" widget="float_time"
-                                           string="Total time spent for this work"/>
-                                </group>
-                            </group>
-                        </page>
-                        <page string="Description">
-                            <group>
+<!--                    <notebook>-->
+<!--                        <page string="TimeSheet">-->
+<!--                            <group>-->
+<!--                                <group>-->
+<!--                                    <field name="total_time" widget="float_time"-->
+<!--                                           string="Total time spent for this work"/>-->
+<!--                                </group>-->
+<!--                            </group>-->
+<!--                        </page>-->
+<!--                        <page string="Description">-->
+<!--                            <group>-->
 
-                                <field name="description" placeholder="Description"/>
+<!--                                <field name="description" placeholder="Description"/>-->
 
-                            </group>
-                        </page>
-                    </notebook>
+<!--                            </group>-->
+<!--                        </page>-->
+<!--                    </notebook>-->
                 </sheet>
                 <div class="oe_chatter">
                     <field name="message_follower_ids"/>
