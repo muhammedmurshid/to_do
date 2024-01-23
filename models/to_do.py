@@ -32,6 +32,7 @@ class ToDoTasks(models.Model):
     assigned_to = fields.Many2one('res.users', string='Assigned To', domain=[('faculty_check', '=', False)],
                                   readonly=False, required=True, )
     completed_date = fields.Date(string='Completed Date')
+    ticket_id = fields.Integer(string='Ticket Id')
     task_organizer = fields.Many2one('res.users', string='Task Organizer', default=lambda self: self.env.user)
 
     def _compute_get_employee(self):
@@ -133,6 +134,8 @@ class ToDoTasks(models.Model):
     #         self.message_post(body=msg)
 
     def action_done(self):
+        ticket = self.env['project.tickets'].sudo().search([('id', '=', self.ticket_id)])
+        ticket.write({'state': 'completed'})
         activity_id = self.env['mail.activity'].search([('res_id', '=', self.id), ('user_id', '=', self.env.user.id), (
             'activity_type_id', '=', self.env.ref('to_do.activity_to_do_activity_custom').id)])
         activity_id.action_feedback(feedback=f'Completed')
@@ -143,6 +146,8 @@ class ToDoTasks(models.Model):
         self.write({'state': 'completed'})
 
     def action_cancel(self):
+        ticket = self.env['project.tickets'].sudo().search([('id', '=', self.ticket_id)])
+        ticket.write({'state': 'cancelled'})
         activity_id = self.env['mail.activity'].search([('res_id', '=', self.id), ('user_id', '=', self.env.user.id), (
             'activity_type_id', '=', self.env.ref('to_do.activity_to_do_activity_custom').id)])
         activity_id.action_feedback(feedback=f'Cancelled')
