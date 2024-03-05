@@ -17,7 +17,6 @@
                     <button name="action_cancel" string="Cancel" type="object" states="task_sent,in_progress,on_hold"/>
                     <button name="action_re_assign_to_do_work" states="task_sent,in_progress,on_hold" type="object"
                             string="Re-Assign" groups="to_do.to_do_organizer"/>
-
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
@@ -31,12 +30,15 @@
                         <group>
                             <field name="make_visible_employee" invisible="1"/>
                             <field name="current_emp_id" string="Organizer" readonly="1"/>
+                            <field name="ticket_owner_id"
+                                   attrs="{'invisible': [('is_this_ticket', '=', False)]}"/>
                             <field name="project_id" invisible="1"/>
                             <field name="batch_id"
                                    attrs="{'readonly': ['|',('state', 'in', ['completed', 'cancelled']), ('user_accounts_head', '=', False)]}"/>
                             <field name="tags_id" widget="many2many_tags"
                                    attrs="{'readonly': [('state', 'in', ['completed', 'cancelled'])]}"/>
                             <field name="description" placeholder="Description"/>
+                            <field name="is_this_ticket" invisible="1"/>
                             <field name="ticket_id" groups="base.group_no_one"/>
 
                         </group>
@@ -59,23 +61,23 @@
                             <field name="completed_date" groups="base.group_no_one"/>
                         </group>
                     </group>
-<!--                    <notebook>-->
-<!--                        <page string="TimeSheet">-->
-<!--                            <group>-->
-<!--                                <group>-->
-<!--                                    <field name="total_time" widget="float_time"-->
-<!--                                           string="Total time spent for this work"/>-->
-<!--                                </group>-->
-<!--                            </group>-->
-<!--                        </page>-->
-<!--                        <page string="Description">-->
-<!--                            <group>-->
+                    <!--                    <notebook>-->
+                    <!--                        <page string="TimeSheet">-->
+                    <!--                            <group>-->
+                    <!--                                <group>-->
+                    <!--                                    <field name="total_time" widget="float_time"-->
+                    <!--                                           string="Total time spent for this work"/>-->
+                    <!--                                </group>-->
+                    <!--                            </group>-->
+                    <!--                        </page>-->
+                    <!--                        <page string="Description">-->
+                    <!--                            <group>-->
 
-<!--                                <field name="description" placeholder="Description"/>-->
+                    <!--                                <field name="description" placeholder="Description"/>-->
 
-<!--                            </group>-->
-<!--                        </page>-->
-<!--                    </notebook>-->
+                    <!--                            </group>-->
+                    <!--                        </page>-->
+                    <!--                    </notebook>-->
                 </sheet>
                 <div class="oe_chatter">
                     <field name="message_follower_ids"/>
@@ -103,15 +105,7 @@
 
         </field>
     </record>
-    <!--    <record id="seq_project_tickets" model="ir.sequence">-->
-    <!--        <field name="name">Tickets</field>-->
-    <!--        <field name="code">project.tickets</field>-->
-    <!--        <field name="active">TRUE</field>-->
-    <!--        <field name="prefix">ST</field>-->
-    <!--        <field name="padding">3</field>-->
-    <!--        <field name="number_next">1</field>-->
-    <!--        <field name="number_increment">1</field>-->
-    <!--    </record>-->
+
     <record id="logic_to_do_tasks_kanban" model="ir.ui.view">
         <field name="name">To Do Kanban</field>
         <field name="model">to_do.tasks</field>
@@ -126,6 +120,11 @@
                 <templates>
                     <t t-name="kanban-box">
                         <div t-attf-class="oe_kanban_content oe_kanban_global_click">
+
+                            <!--                            <div class="o_kanban_record_ribbon"-->
+                            <!--                                 t-attf-style="background-color: red; position: absolute; top: 0; right: 0;">-->
+                            <!--                                <span class="o_kanban_record_ribbon_text">Ribbon Text</span>-->
+                            <!--                            </div>-->
                             <div>
                                 <strong class="o_kanban_record_title">
                                     <span>
@@ -151,10 +150,6 @@
                                 <field name="assigned_to" widget="many2one_avatar_user"/>
                             </div>
 
-                            <!--                            <div>-->
-                            <!--                                <field name="rating" widget="priority"/>-->
-                            <!--                            </div>-->
-
                         </div>
                     </t>
                 </templates>
@@ -176,6 +171,7 @@
         <field name="domain">['|',('assigned_to.id','=', uid), ('coworkers_ids', 'in', [uid])]</field>
         <field name="view_mode">kanban,tree,form</field>
     </record>
+
     <menuitem name="My Tasks" id="menu_my_to_do_tasks"
               action="to_do_custom_action_for_users"
               parent="menu_to_do_tasks"

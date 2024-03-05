@@ -7,7 +7,6 @@ class ToDoTasks(models.Model):
     _name = 'to_do.tasks'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _description = 'Task'
-    _order = 'id desc'
 
     name = fields.Char(string='Name', required=True)
     priority = fields.Selection([
@@ -22,7 +21,6 @@ class ToDoTasks(models.Model):
         ('cancelled', 'Cancelled')
     ], string='Status', default='draft', tracking=True)
     project_id = fields.Many2one('project.project', string='Project')
-    is_this_ticket = fields.Boolean(string='Is This Ticket')
 
     batch_id = fields.Many2one('logic.base.batch', string='Batch')
     dead_line = fields.Date(string='Dead Line')
@@ -35,7 +33,6 @@ class ToDoTasks(models.Model):
                                   readonly=False, required=True, )
     completed_date = fields.Date(string='Completed Date')
     ticket_id = fields.Integer(string='Ticket Id')
-    ticket_owner_id = fields.Many2one('res.users', string='Ticket Owner', readonly=1)
     task_organizer = fields.Many2one('res.users', string='Task Organizer', default=lambda self: self.env.user)
 
     def _compute_get_employee(self):
@@ -179,7 +176,7 @@ class ToDoTasks(models.Model):
 
     def action_task_sent(self):
         print(self.coworkers_ids, 'oooo')
-        print('to co')
+		print('Terminal Effect')
         self.activity_schedule('to_do.activity_to_do_activity_custom', user_id=self.assigned_to.id,
                                note=f'Check on your tasks {self.assigned_to.name}')
         users = self.env['res.users'].search([('id', 'in', self.coworkers_ids.ids)])

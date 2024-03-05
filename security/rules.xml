@@ -9,7 +9,7 @@
             <field name="groups" eval="[(4, ref('to_do.to_do_worker_id'))]"/>
         </record>
         <record model="ir.rule" id="my_tasks_organizer_view_id">
-            <field name="name">Tasks Organize</field>
+            <field name="name">Tasks Organizer</field>
             <field name="model_id" ref="model_to_do_tasks"/>
             <field name="domain_force">['|',('current_emp_id.parent_id.user_id.id' ,'=', user.id), ('create_uid', '=',
                 user.id)]
