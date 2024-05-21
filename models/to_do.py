@@ -147,6 +147,11 @@ class ToDoTasks(models.Model):
         other_activity_ids.unlink()
         self.completed_date = datetime.now()
         self.write({'state': 'completed'})
+        self.env['logic.task.other'].sudo().create({'name': self.name,
+                                                    'task_types':'other',
+                                                    })
+        rec = self.env['logic.task.other'].search([], limit=1, order='id desc')
+        rec.sudo().write({'state': 'completed'})
 
     def action_cancel(self):
         ticket = self.env['project.tickets'].sudo().search([('id', '=', self.ticket_id)])
