@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="project_new_fields_adding_form_view" model="ir.ui.view">
+        <field name="name">Project Fields</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2"/>
+        <field name="arch" type="xml">
+            <xpath expr="// field[@name='partner_id']" position="after">
+                <field name="change_description"/>
+                <field name="testing_summary" attrs="{'invisible':[('department', '!=', 'it')]}"/>
+                <field name="code_review_notes" attrs="{'invisible':[('department', '!=', 'it')]}"/>
+                <field name="attachments"/>
+                <field name="approver_id"/>
+                <field name="status" groups="base.group_no_one"/>
+            </xpath>
+            <xpath expr="// field[@name='user_id']" position="after">
+                <field name="department" required="1"/>
+
+            </xpath>
+            <header>
+                <button name="action_sent_to_test" type="object" string="Sent to Test" class="oe_highlight"
+                        attrs="{'invisible': ['|',('department', '!=', 'it'), ('status', '!=', 'new_request')]}"/>
+                <button name="action_sent_to_code_review" type="object" string="Sent to Code Review"
+                        class="oe_highlight"
+                        attrs="{'invisible': ['|',('department', '!=', 'it'),('status', '!=', 'testing')]}"/>
+                <button name="action_sent_to_approval" type="object" string="Sent to Approval" class="oe_highlight"
+                        attrs="{'invisible': ['|',('department', '!=', 'it'),('status', '!=', 'code_review')]}"/>
+                <button name="action_ready_for_production" type="object" string="Approve" class="oe_highlight"
+                        attrs="{'invisible': ['|',('department', '!=', 'it'),('status', '!=', 'approval_pending')]}"/>
+                <button name="action_production" type="object" string="Production" class="oe_highlight"
+                        attrs="{'invisible': ['|',('department', '!=', 'it'),('status', '!=', 'ready_for_production')]}"/>
+                <button name="action_ticket_closed" type="object" string="Completed" class="oe_highlight"
+                        attrs="{'invisible': ['|',('department', '!=', 'it'),('status', '!=', 'production')]}"/>
+                <button name="action_ticket_rejection" type="object" string="Reject" class="oe_highlight"
+                        attrs="{'invisible': ['|',('department', '!=', 'it'),('status', '!=', 'approval_pending')]}" style="background-color:#f71942"/>
+            </header>
+        </field>
+    </record>
+
+    <record id="project_new_fields_adding_kanban_view" model="ir.ui.view">
+        <field name="name">Project Fields</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.quick_create_task_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="// field[@name='user_id']" position="after">
+                <field name="department" required="1"/>
+
+            </xpath>
+        </field>
+    </record>
+</odoo>

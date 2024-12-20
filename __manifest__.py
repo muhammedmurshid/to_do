@@ -2,7 +2,7 @@
     'name': "To Do",
     'version': "14.0.1.0",
     'sequence': "0",
-    'depends': ['base', 'mail'],
+    'depends': ['base', 'mail', 'project'],
     'data': [
         'data/activity.xml',
         'security/groups.xml',
@@ -10,6 +10,7 @@
         'security/rules.xml',
         'views/to_do.xml',
         'views/assign_wizard.xml',
+        'views/project_view.xml'
 
     ],
     'demo': [],
