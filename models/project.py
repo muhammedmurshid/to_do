@@ -52,6 +52,19 @@ class ProjectAddFields(models.Model):
             self.code_review_notes = False
             self.change_description = False
 
+    @api.onchange('patching_status','project_type')
+    def _onchange_patching(self):
+        if self.project_type:
+            if self.project_type == 'patching_management':
+                print('hi')
+                self.status = False
+                if not self.patching_status:
+                    self.patching_status = 'request_logged'
+            if self.project_type == 'changing_management':
+                self.patching_status = False
+                if not self.status:
+                    self.status = 'new_request'
+
     def action_sent_to_test(self):
         stage = self.env['project.task.type'].sudo().search([('name', '=', 'Testing')], limit=1)
         if stage:
